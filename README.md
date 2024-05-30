@@ -69,7 +69,7 @@ def get_node_info():
 
 # GCP Server 내부 동작
 
-## 서울시청 ~ 인천시청
+## 출발지: 서울시청, 도착지: 인천시청
 
 ### AI Model Prediction
 
@@ -89,8 +89,7 @@ A* 알고리즘을 통해 구한 최단 시간 ETA와 경로는 다음과 같고
 
 <img width="650" alt="naver eta1" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/f3fcdc21-a13e-42b8-b30f-d503ed077375">
 
-
-## 서울시청 ~ 부산시청
+## 출발지: 서울시청, 도착지: 부산시청
 
 ### AI Model Prediction
 
