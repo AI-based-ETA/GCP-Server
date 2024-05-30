@@ -134,18 +134,18 @@ A* 알고리즘을 통해 구한 최단 시간 ETA와 경로는 다음과 같고
 
 ### 1) AI 개발환경과 같은 python version으로 Downgrade
 
-AI 개발환경의 python3 version은 3.6, ubuntu 20.0.4의 deafult python3 version은 3.8로 version이 상이함
+AI 개발환경의 ``python3 version``은 ``3.6``, ``ubuntu 20.0.4``의 ``deafult python3 version``은 ``3.8``로 version이 상이함
 
-때문에, flask를 실행시킬 가상환경 내부에서는 3.8이 아닌, 3.6을 사용해야 하므로, 3.6을 default로 설정함
+때문에, flask를 실행시킬 가상환경 내부에서는 ``3.8``이 아닌, ``3.6``을 사용해야 하므로, ``3.6``을 ``default``로 설정함
 
 ### 2) 팀원이 공유할 수 있는 공유 폴더 생성
 
-각 팀원이 Flask에 접근할 수 있게 공유할 수 있는 폴더를 chmod 2775로 생성
+각 팀원이 Flask에 접근할 수 있게 공유할 수 있는 폴더를 ``chmod 2775``로 생성
 
-폴더 생성 후 group 생성 하여 팀원의 user ID 추가 후, 공유 폴더의 소유자를 group으로 변경함
+폴더 생성 후 ``group`` 생성 하여 팀원의 user ID 추가 후, 공유 폴더의 소유자를 ``group``으로 변경함
 
 ### 3) 공유 폴더 내 flask Run을 위한 가상 환경 생성
 
-flask Server를 Run 시킬 때, virtual Enviroment 없이 실행시키는 경우 fatal error가 발생하는 경우 대처가 어려울 수 있어 virtual enviroment를 source /home/shared/venv/bin/activate를 통해 가상 환경 활성화 후 flask 실행
+flask Server를 Run 시킬 때, ``virtual Enviroment`` 없이 실행시키는 경우 ``fatal error``가 발생하는 경우 대처가 어려울 수 있어 ``virtual enviroment``를 ``source /home/shared/venv/bin/activate``를 통해 가상 환경 활성화 후 flask 실행
 
-이후, deactivate를 통해 가상 환경 종료
+이후, ``deactivate``를 통해 가상 환경 종료
