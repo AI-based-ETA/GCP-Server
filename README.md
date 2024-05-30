@@ -93,7 +93,7 @@ A* 알고리즘을 통해 구한 최단 시간 ETA와 경로는 다음과 같고
 
 인공지능 모델은 한번에 구간 별로 horizon 1 ~ 12까지 총 60분 추론까지 추론하는데, ``서울시청 ~ 부산시청``는 4시간 이상 걸리기 때문에 총 5번 추론하였습니다. 
 
-``첫번째 추론``
+``1번째 추론``
 
 
 <img width="750" alt="Screen Shot 2024-05-30 at 12 08 40 PM" src="https://github.com/daydream-er/pretrained-AI-Model/assets/65798779/d097beb3-8b82-4831-aed1-cf21fd269378">
