@@ -140,21 +140,26 @@ def a_ster(start_node, end_node, start_time, vms_timetable_df):
         
         # (2) 1시간이 지날 때 마다 인공지능에 request 
         # (3) 이때 timetable_df의 이전 시각에 대한 요구는 (1) 조건에 의해 존재할 수 없다.
-        if current_time - last_request_time >= timedelta(hours=1) + timedelta(minutes=5):
+        # if current_time - last_request_time >= timedelta(hours=1) + timedelta(minutes=5):
+        #     last_request_time += timedelta(hours=1)
+        #     vms_timetable_df = request_speed_data(last_request_time)
+        if round_time_to_nearest_5_minutes(current_time) - last_request_time >= timedelta(hours=1) + timedelta(minutes=5):
             last_request_time += timedelta(hours=1)
             vms_timetable_df = request_speed_data(last_request_time)
         
         for next_node, distance in edges.get(current_node, []):
             # 통행 시간 계산
-            speed = get_speed_data_for_time(current_time, vms_timetable_df, current_node)
+            # speed = get_speed_data_for_time(current_time, vms_timetable_df, current_node)
+            speed = get_speed_data_for_time(round_time_to_nearest_5_minutes(current_time), vms_timetable_df, current_node)
             distance_km = distance / 1000  # 단위 맞추기
             time_a = distance_km / speed  # 시간 = 거리 / 속도(속력)
             time_elapsed = time_a * 3600  # 초로 변환
 
             next_time = current_time + timedelta(seconds=time_elapsed)
-            next_time = round_time_to_nearest_5_minutes(next_time)
+            # next_time = round_time_to_nearest_5_minutes(next_time)
             if next_time < vertex[next_node]:
                 vertex[next_node] = next_time
+                # vertex[next_node] = round_time_to_nearest_5_minutes(next_time)
                 parent_node[next_node] = current_node # next_node 부모는 current_dest
                 heapq.heappush(queue, (vertex[next_node], next_node))  # 다음 인접 거리를 계산 하기 위해 큐에 삽입
 
@@ -166,15 +171,18 @@ def a_ster(start_node, end_node, start_time, vms_timetable_df):
     total_minutes = (time_difference.seconds % 3600) // 60
     total_seconds = time_difference.seconds % 60
     
-    path_names = []
+    path = []
     current_node = end_node
-    path_names.append(current_node)
+    path.append(current_node)
     print("current_node:", current_node)
     while current_node is not start_node:
         current_node = parent_node[current_node]
-        path_names.append(current_node)
+        path.append(current_node)
         print("current_node:", current_node, " current_time", vertex[current_node])
-    path_names = path_names[::-1]
+    path = path[::-1]
+
+    path_names = [node_to_name.get(node, f"Node {node}") for node in path]
+
     return {
         'path_names': path_names,
         'total_hours': total_hours,
@@ -272,14 +280,18 @@ def get_node_info():
     data = request.json
     node_names = data.get('nodeNames')
 
+    print("where 1")
     if not node_names:
         return jsonify({'error': 'No node names provided'}), 400
 
+    print("where 2")
     csv_file_path = os.path.join(os.path.dirname(__file__), 'nodelatlng.csv')
     df = pd.read_csv(csv_file_path)
     node_info = []
 
+    print("where 3")
     for name in node_names:
+        print(name)
         node_row = df[df['Name'] == name]
         if not node_row.empty:
             info = {
@@ -288,6 +300,7 @@ def get_node_info():
                 'lng': float(node_row.iloc[0]['Longitude'])
             }
             node_info.append(info)
+    print("where 4")
     return jsonify(node_info)
 
 if __name__ == '__main__':
