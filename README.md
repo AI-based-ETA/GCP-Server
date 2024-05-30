@@ -4,16 +4,24 @@
 
 # GCP Server 아키텍처 설명
 
-VDS 데이터셋으로 학습한 인공지능이 예측한 미래 속도 데이터셋을 활용하여 최단 시간 ETA와 경로를 구할 수 있습니다.
+## GCP Server 동작 순서
 
-- 인공지능 모델은 Graph WaveNet for Deep Spatial-Temporal Graph Modeling을 이용하였고, 한국도로교통공사 공공데이터포탈의 VDS 데이터를 활용하여 학습시켰습니다.
-
-- 인공지능 모델이 추론한 미래 속도 데이터셋을 통해, 시간에 따라 동적으로 가중치가 변화는 A* 알고리즘을 직접 구현하였습니다.
-
-- GCP에 배포된 인공지능 모델은 Flask를 통해 react와 통신합니다.
+1. 사용자의 요청을 GCP(클라우드)의 Flask로 받고, Pretrained AI Model로 구간별 미래 속도 데이터를 추론합니다.
+2. 동적 환경에서 최단 경로를 찾을 수 있도록 구현한 A* 알고리즘과 구간별 미래 속도 데이터를 활용하여 ``최단 시간 경로``와 ``최단 ETA``를 구할 수 있습니다.
+3. ``최단 시간 경로``와 ``최단 ETA``를 json 형태로 사용자에게 응답을 보냅니다.
 
 
 ## Graph WaveNet for Deep Spatial Temporal Graph Modeling
+
+다음의 인공지능 모델은 추론 요청 전 1시간 동안의 구간별 속도 데이터를 통해 미래의 1시간 속도 데이터를 구할 수 있습니다.
+
+해당 인공지능 모델을 ``AI-Based-ETA`` 캡스톤 프로젝트에 사용한 이유는 다음과 같습니다.
+
+1. 32-layer의 ``TCN 모듈``, ``GCN 모듈`` 그리고 ``Residual connection``을 사용하여 빠른 학습과 빠른 추론이 가능합니다.
+2. 시간적 의존관계와 공간적 의존관계를 포착하기 때문에 다른 인공지능 모델에 비해 높은 성능을 갖고 있습니다.
+3. 인기있는 모델이기 때문에 참고할 수 있는 자료가 많아서 트러블슈팅에 유리합니다.
+
+---
 
 This is the original pytorch implementation of Graph WaveNet in the following paper: 
 [Graph WaveNet for Deep Spatial-Temporal Graph Modeling, IJCAI 2019] (https://arxiv.org/abs/1906.00121).  A nice improvement over GraphWavenet is presented by Shleifer et al. [paper](https://arxiv.org/abs/1912.07390) [code](https://github.com/sshleifer/Graph-WaveNet).
@@ -22,15 +30,15 @@ This is the original pytorch implementation of Graph WaveNet in the following pa
   <img width="350" height="400" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/da88d77f-5ea9-48db-8f45-fb3041fc4f4e">
 </p>
 
-위의 인공지능을 통해 교통량 예측을 통한 교통량에 따라 미래의 구간 별 속도 데이터셋을 구할 수 있습니다. 
-
-구간 별 속도 데이터셋과 거리 데이터셋을 통해 구간 별 ETA(Estimated Time of Arrival)를 구할 수 있습니다.
-
 
 
 ## A* 알고리즘
 
-A* 알고리즘의 가중치가 시간에 따라 동적으로 변화도록 구현하였습니다.
+구간별 속도는 시간에 따라 동적으로 변화합니다. 따라서 동적 환경에서 최단 시간 경로와 ETA를 구하기 위해 A* 알고리즘을 직접 구현하였습니다.
+
+A* 알고리즘의 핵심 로직의 다음 2가지 입니다.
+
+첫 번째는 시간에 따라 변화는 속도를 ``current_time``을 기준으로 ``vms_timetable_df``에서 찾고, 구간별 거리에 나눠서 경과 시간(동적 가중치)를 구합니다.
 
 ~~~
 # 통행 시간 계산
@@ -43,7 +51,7 @@ next_time = current_time + timedelta(seconds=time_elapsed)
 next_time = round_time_to_nearest_5_minutes(next_time)
 ~~~
 
-인공지능 모델은 60분 미래 데이터를 추론하기 때문에, Sliding Window 기법을 응용하여 필요할 때마다 인공지능을 추론할 수 있도록 구현하였습니다.
+두 번째는 Sliding Window 기법을 활용하여, 미래 속도 데이터가 추가로 필요할 때마다 인공지능으로 구하였습니다.
 
 ~~~~
 if current_time - last_request_time >= timedelta(hours=1) + timedelta(minutes=5):
@@ -54,7 +62,7 @@ if current_time - last_request_time >= timedelta(hours=1) + timedelta(minutes=5)
 
 ## Flask
 
-요청 받은 출발지, 도착지, 현재 시각을 통해 최단 시간 ETA와 경로를 json 형태로 반환합니다.
+사용자의 요청인 ``출발지``, ``도착지``, ``시각``을 받고, 인공지능과 A* 알고리즘으로 구한 최단 시간 경로와 ETA를 json 형태로 응답을 반환합니다.
 ~~~
 @app.route('/find_path', methods=['POST'])
 def find_path():
@@ -69,11 +77,11 @@ def get_node_info():
 
 # GCP Server 내부 동작
 
-## 출발지: 서울시청, 도착지: 인천시청
+## (1) 출발지: 서울시청, 도착지: 인천시청
 
 ### AI Model Prediction
 
-인공지능 모델이 구간 별로 horizon 1 ~ 12까지 총 60분 추론하였습니다.
+인공지능 모델이 구간 별로 horizon(5분 단위) 1 ~ 12까지 총 60분 추론하였습니다.
 
 <img width="750" alt="model eta1" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/5c3e8101-f972-413b-88d8-0c1f6188641e">
 
@@ -89,11 +97,13 @@ A* 알고리즘을 통해 구한 최단 시간 ETA와 경로는 다음과 같고
 
 <img width="650" alt="naver eta1" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/f3fcdc21-a13e-42b8-b30f-d503ed077375">
 
-## 출발지: 서울시청, 도착지: 부산시청
+---
+
+## (2) 출발지: 서울시청, 도착지: 부산시청
 
 ### AI Model Prediction
 
-인공지능 모델은 한번에 구간 별로 horizon 1 ~ 12까지 총 60분 추론까지 추론하는데, ``서울시청 ~ 부산시청``는 4시간 이상 걸리기 때문에 총 5번 추론하였습니다. 
+인공지능 모델은 한번에 구간 별로 horizon(5분 단위) 1 ~ 12까지 총 60분 추론까지 추론하는데, ``서울시청 ~ 부산시청``는 4시간 이상 걸리기 때문에 총 5번 추론하였습니다. 
 
 ``1번째 추론``
 
