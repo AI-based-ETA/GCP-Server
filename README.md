@@ -72,19 +72,19 @@ def get_node_info():
 
 인공지능 모델이 구간 별로 horizon 1 ~ 12까지 총 60분 추론하였습니다.
 
-<img width="750" alt="Screen Shot 2024-05-30 at 11 59 30 AM" src="https://github.com/daydream-er/pretrained-AI-Model/assets/65798779/c70effde-afeb-433e-963c-01be25981d22">
+<img width="750" alt="model eta1" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/5c3e8101-f972-413b-88d8-0c1f6188641e">
 
 ### 결과
 
 A* 알고리즘을 통해 구한 최단 시간 ETA와 경로는 다음과 같고, ``total_hours: 0, total_minutes: 55, total_seconds: 0``으로 총 55분 거렸습니다.
 
-<img width="750" alt="Screen Shot 2024-05-30 at 11 57 40 AM" src="https://github.com/daydream-er/pretrained-AI-Model/assets/65798779/8dfb62bd-c016-4e9b-a639-dd5107372f18">
+<img width="750" alt="path1" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/3ab903d4-a696-4c5f-b8cc-b786c5b8c4ee">
 
 ### 비교
 
 다음은 동일 시각의 ``네이버 길찾기``를 통해 구한 결과입니다.
 
-<img width="750" alt="Screen Shot 2024-05-30 at 11 58 13 AM" src="https://github.com/daydream-er/pretrained-AI-Model/assets/65798779/d15c2029-0a18-4f9d-894d-aa8568ea49a2">
+<img width="650" alt="naver eta1" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/f3fcdc21-a13e-42b8-b30f-d503ed077375">
 
 
 ## 서울시청 ~ 부산시청
@@ -96,12 +96,11 @@ A* 알고리즘을 통해 구한 최단 시간 ETA와 경로는 다음과 같고
 ``1번째 추론``
 
 
-<img width="750" alt="Screen Shot 2024-05-30 at 12 08 40 PM" src="https://github.com/daydream-er/pretrained-AI-Model/assets/65798779/d097beb3-8b82-4831-aed1-cf21fd269378">
+<img width="750" alt="predict1" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/8d7350dd-6586-40ec-8325-66b0dde8d978">
 
 ``5번째 추론``
 
-<img width="750" alt="Screen Shot 2024-05-30 at 12 08 55 PM" src="https://github.com/daydream-er/pretrained-AI-Model/assets/65798779/4f314947-0108-478e-a31f-ef531f3591fe">
-
+<img width="750" alt="predict5" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/ef80ba4b-9c62-40e5-879f-bee1c67d186e">
 
 첫 번째 추론과 마지막 추론을 비교하면, 추론을 길게 할 수록 정확도가 낮아지는 것을 알 수 있습니다.
 
@@ -110,10 +109,11 @@ A* 알고리즘을 통해 구한 최단 시간 ETA와 경로는 다음과 같고
 
 A* 알고리즘을 통해 구한 최단 시간 ETA와 경로는 다음과 같고, ``total_hours: 4, total_minutes: 10, total_seconds: 0``으로 총 4시간 10분 걸렸습니다.
 
-<img width="750" alt="Screen Shot 2024-05-30 at 12 09 07 PM" src="https://github.com/daydream-er/pretrained-AI-Model/assets/65798779/b36c9e0a-6f8e-4bfd-80b7-924bb4fff2f4">
+<img width="750" alt="path2" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/df472c6d-1e06-4303-9484-83c7ea8098e9">
 
 ### 비교
 
 다음은 동일 시각의 ``네이버 길찾기``를 통해 구한 결과입니다.
 
-<img width="750" alt="Screen Shot 2024-05-30 at 12 09 32 PM" src="https://github.com/daydream-er/pretrained-AI-Model/assets/65798779/9ad1b33e-76e1-49d8-9112-eca8c9587036">
+
+<img width="650" alt="naver path2" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/24bed4ad-193b-4255-a0ff-4cf8c93178bb">
