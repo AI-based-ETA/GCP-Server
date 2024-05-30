@@ -1,7 +1,6 @@
 ## 목차
 - [GCP Server 아키텍처 설명](#gcp-server-아키텍처-설명)
 - [GCP Server 내부 동작](#gcp-server-내부-동작)
-- [AI Model 추론 성능](#ai-model-추론-성능)
 
 # GCP Server 아키텍처 설명
 
@@ -121,8 +120,3 @@ A* 알고리즘을 통해 구한 최단 시간 ETA와 경로는 다음과 같고
 
 
 <img width="650" alt="naver path2" src="https://github.com/AI-based-ETA/GCP-Server/assets/65798779/24bed4ad-193b-4255-a0ff-4cf8c93178bb">
-
-# AI Model Prediction Performance
-
-
-
