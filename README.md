@@ -1,3 +1,7 @@
+## 목차
+- [GCP Server 아키텍처 설명](#gcp-server-아키텍처-설명)
+- [GCP Server 내부 동작](#gcp-server-내부-동작)
+
 # GCP Server 아키텍처 설명
 
 VDS 데이터셋으로 학습한 인공지능이 예측한 미래 속도 데이터셋을 활용하여 최단 시간 ETA와 경로를 구할 수 있습니다.
@@ -8,9 +12,8 @@ VDS 데이터셋으로 학습한 인공지능이 예측한 미래 속도 데이�
 
 - GCP에 배포된 인공지능 모델은 Flask를 통해 react와 통신합니다.
 
----
 
-## Graph WaveNet for Deep Spatial-Temporal Graph Modeling
+## Graph WaveNet for Deep Spatial Temporal Graph Modeling
 
 This is the original pytorch implementation of Graph WaveNet in the following paper: 
 [Graph WaveNet for Deep Spatial-Temporal Graph Modeling, IJCAI 2019] (https://arxiv.org/abs/1906.00121).  A nice improvement over GraphWavenet is presented by Shleifer et al. [paper](https://arxiv.org/abs/1912.07390) [code](https://github.com/sshleifer/Graph-WaveNet).
