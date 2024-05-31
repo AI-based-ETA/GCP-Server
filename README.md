@@ -37,9 +37,24 @@ This is the original pytorch implementation of Graph WaveNet in the following pa
 
 구간별 속도는 시간에 따라 동적으로 변화합니다. 따라서 동적 환경에서 최단 시간 경로와 ETA를 구하기 위해 A* 알고리즘을 직접 구현하였습니다.
 
-A* 알고리즘의 핵심 로직의 다음 2가지 입니다.
+A* 알고리즘의 핵심 로직의 다음 3가지 입니다.
 
-첫 번째는 시간에 따라 변화는 속도를 ``current_time``을 기준으로 ``vms_timetable_df``에서 찾고, 구간별 거리에 나눠서 경과 시간(동적 가중치)를 구합니다.
+첫 번째는 heurisitc함수를 통한 경로 탐색 보정 입니다.
+
+Dijkstra, BFS, DFS 등을 사용한 경로탐색은 목적지까지 원하는 노드에 도달하기 위해, 방향과 상관없는 노드를 탐색하지만, heuristic함수를 사용한 A*는 그렇지 않습니다.
+
+출발지와 목적지의 위도와 경도를 사용한 heuristic함수를 통해, 출발지에서 목적지까지 원하는 방향의 노드들만 탐색해 경로를 찾을 수 있습니다.(유클리드 distance 사용)
+
+~~~
+### 휴리스틱 함수
+def heuristic(node1, node2, node_info):
+    lat1, lng1 = node_info[node1]
+    lat2, lng2 = node_info[node2]
+    return math.sqrt((lat1 - lat2) ** 2 + (lng1 - lng2) ** 2)
+~~~
+
+
+두 번째는 시간에 따라 변화는 속도를 ``current_time``을 기준으로 ``vms_timetable_df``에서 찾고, 구간별 거리에 나눠서 경과 시간(동적 가중치)를 구합니다.
 
 ~~~
 # 통행 시간 계산
@@ -52,7 +67,7 @@ next_time = current_time + timedelta(seconds=time_elapsed)
 next_time = round_time_to_nearest_5_minutes(next_time)
 ~~~
 
-두 번째는 Sliding Window 기법을 활용하여, 미래 속도 데이터가 추가로 필요할 때마다 인공지능으로 구하였습니다.
+세 번째는 Sliding Window 기법을 활용하여, 미래 속도 데이터가 추가로 필요할 때마다 인공지능으로 구하였습니다.
 
 ~~~~
 if current_time - last_request_time >= timedelta(hours=1) + timedelta(minutes=5):
